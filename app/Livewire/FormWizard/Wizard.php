@@ -30,16 +30,21 @@ class Wizard extends Component
 
     public function mount(): void
     {
-        $this->initState();
+        $this->initializeState();
         $this->regenerateKey();
     }
 
-    protected function initState(): void
+    protected function initializeState(): void
     {
         $this->state = new Collection();
         foreach ($this->steps() as $index => $step) {
             if (is_subclass_of($step::form(), Form::class)) {
-                $this->state->push(new ($step::form())($this, 'state.'.$index));
+                $form = new ($step::form())($this, 'state.'.$index);
+                // as state is owned by the wizard it has to initialize it. To keep it somewhat separated to the step component this is done in the form
+                if (method_exists($form, 'mountForm')) {
+                    $form->mountForm();
+                }
+                $this->state->push($form);
             }
         }
     }

@@ -22,4 +22,13 @@ class Step1Form extends Form
             'enum1' => ['required', Rule::enum(TestEnum::class)],
         ];
     }
+
+    /**
+     * initializes the form
+     * gets called from the wizard
+     */
+    public function mountForm(): void
+    {
+        $this->enum1 = TestEnum::TEST_2;
+    }
 }
